@@ -1,4 +1,4 @@
-print('This is a quiz of a different kind!')
+print('This is a quiz of a different kind! :) ')
 
 
 QUIZ_QUESTIONS = [
