@@ -1,6 +1,6 @@
 
 trainer_name = "y/n"
-pokemon_team = ["Panflam", "Igellaver", "Glumanda"]
+pokemon_team = ["Panflam", "Feurigel", "Glumanda"]
 inventory = []
 inventory_limit = 5
 
