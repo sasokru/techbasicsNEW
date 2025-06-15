@@ -1,7 +1,12 @@
-import pyjokes
+import cowsay
+from colorama import Fore, Style
+from jokes_more import get_joke
 
-def get_programming_joke():
-    return pyjokes.get_joke()
+def tell_joke():
+    joke = get_joke()
+    print(Fore.CYAN + Style.BRIGHT)
+    cowsay.trex(joke)
+    print(Style.RESET_ALL)
 
-def get_custom_joke():
-    return "Why do programmers prefer dark mode? Because light attracts bugs!"
+if __name__ == "__main__":
+    tell_joke()
