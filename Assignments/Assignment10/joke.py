@@ -1,15 +1,19 @@
-from pyjokes.jokes_cs import jokes_cs
-import pyjokes
 import cowsay
-from termcolor import colored
-import pyfiglet
+from colorama import Fore, Style
+from more_jokes import get_programming_joke, get_custom_joke
 
-title = pyfiglet.figlet_format("Dev Joke", font="slant")
-print(colored(title, 'cyan'))
+def tell_joke(joke):
+    print(Fore.CYAN + "Here's a joke for you:" + Style.RESET_ALL)
+    cowsay.cow(joke)
 
-joke = pyjokes.get_joke(language='en', category='all')
+def main():
+    joke1 = get_programming_joke()
+    tell_joke(joke1)
 
-print(colored("Here's a joke for you:", 'green'))
-print()
+    print()  # Leerzeile
 
-cowsay.dragon(colored(joke, 'yellow'))
+    joke2 = get_custom_joke()
+    tell_joke(joke2)
+
+if __name__ == "__main__":
+    main()

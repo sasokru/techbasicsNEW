@@ -2,3 +2,6 @@ cowsay==6.1
 pyfiglet==1.0.3
 pyjokes==0.8.3
 termcolor==3.1.0
+pyjokes
+cowsay
+colorama
