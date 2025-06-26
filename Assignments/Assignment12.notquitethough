@@ -1,0 +1,155 @@
+# not ready yet, i am still managing and organzing my files
+
+import pygame
+import random
+import sys
+
+pygame.init()
+
+
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Star Wars: Lightsaber & Blaster Battle")
+
+clock = pygame.time.Clock()
+
+
+jedi_img = pygame.image.load("assets/jedi.png")
+sith_img = pygame.image.load("assets/sith.png")
+stormtrooper_img = pygame.image.load("assets/stormtrooper.png")
+
+
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+
+
+class Character:
+    def __init__(self, image, x, y, speed):
+        self.surface = image
+        self.rect = self.surface.get_rect(center=(x, y))
+        self.speed = speed
+
+    def move(self, dx, dy):
+        self.rect.move_ip(dx, dy)
+        self.rect.clamp_ip(screen.get_rect())
+
+    def draw(self, screen):
+        screen.blit(self.surface, self.rect)
+
+
+class Blaster:
+    def __init__(self, x, y):
+        self.surface = pygame.Surface((5, 15))
+        self.surface.fill(WHITE)
+        self.rect = self.surface.get_rect(center=(x, y))
+
+    def move(self):
+        self.rect.move_ip(0, -10)
+
+    def draw(self, screen):
+        screen.blit(self.surface, self.rect)
+
+
+def spawn_enemy():
+    x = random.randint(50, WIDTH - 50)
+    y = -50
+    return Character(stormtrooper_img, x, y, 3)
+
+
+def main():
+    # Choose Jedi or Sith
+    side = input("Choose your side (jedi/sith): ").lower()
+
+    if side == 'jedi':
+        player = Character(jedi_img, WIDTH // 2, HEIGHT - 60, 5)
+    else:
+        player = Character(sith_img, WIDTH // 2, HEIGHT - 60, 5)
+
+    blasters = []
+    enemies = []
+    spawn_timer = 0
+
+    
+    score = 0
+    font = pygame.font.SysFont(None, 36)
+
+    running = True
+    while running:
+        screen.fill((0, 0, 0))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            player.move(-player.speed, 0)
+        if keys[pygame.K_RIGHT]:
+            player.move(player.speed, 0)
+
+        # Lightsaber (press A)
+        if keys[pygame.K_a]:
+            for enemy in enemies[:]:
+                if player.rect.colliderect(enemy.rect.inflate(50, 50)):
+                    enemies.remove(enemy)
+                    score += 5
+                    print("Enemy defeated with lightsaber!")
+
+        # Blaster  (press S)
+        if keys[pygame.K_s]:
+            if len(blasters) < 3:
+                blasters.append(Blaster(player.rect.centerx, player.rect.top))
+
+        
+        for blaster in blasters[:]:
+            blaster.move()
+            if blaster.rect.bottom < 0:
+                blasters.remove(blaster)
+
+        
+        spawn_timer += 1
+        if spawn_timer > 60:
+            enemies.append(spawn_enemy())
+            spawn_timer = 0
+
+        for enemy in enemies[:]:
+            enemy.move(0, enemy.speed)
+            if enemy.rect.top > HEIGHT:
+                enemies.remove(enemy)
+
+            
+            if player.rect.colliderect(enemy.rect):
+                print("Game Over! Final Score:", score)
+                running = False
+
+      
+        for blaster in blasters[:]:
+            for enemy in enemies[:]:
+                if blaster.rect.colliderect(enemy.rect):
+                    enemies.remove(enemy)
+                    blasters.remove(blaster)
+                    score += 10
+                    print("Enemy hit by blaster!")
+                    break
+
+  
+        player.draw(screen)
+        for blaster in blasters:
+            blaster.draw(screen)
+        for enemy in enemies:
+            enemy.draw(screen)
+
+        
+        score_text = font.render(f"Score: {score}", True, WHITE)
+        screen.blit(score_text, (10, 10))
+
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.quit()
+    sys.exit()
+
+
+if __name__ == "__main__":
+    main()
